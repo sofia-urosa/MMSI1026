@@ -13,6 +13,7 @@ const page = `<!doctype html>
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; color: var(--muted); }
 .field input { font: inherit; color: var(--muted); max-width: 100%; }
+.field input[type="password"] { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; max-width: 320px; }
 .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 button { border: 0; border-radius: 8px; padding: 8px 16px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
 button:disabled { opacity: 0.6; cursor: default; }
@@ -25,6 +26,7 @@ button:disabled { opacity: 0.6; cursor: default; }
 <header><div class="wrap head"><h1>Upload</h1><a class="updated" href="/">View app</a></div></header>
 <main class="wrap">
   <div class="box">
+    <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password"></div>
     <div class="field"><label for="fa">attempters.csv</label><input id="fa" type="file" accept=".csv,text/csv"></div>
     <div class="field"><label for="fr">reviewers.csv</label><input id="fr" type="file" accept=".csv,text/csv"></div>
     <div class="row"><button id="go">Upload</button><span class="status" id="st"></span></div>
@@ -34,10 +36,10 @@ button:disabled { opacity: 0.6; cursor: default; }
 const key = decodeURIComponent(location.pathname.replace(/^\\/+|\\/+$/g, ""));
 const st = document.getElementById("st");
 const say = (t, c) => { st.textContent = t; st.className = "status " + (c || ""); };
-async function send(role, file) {
+async function send(role, file, pw) {
   const res = await fetch("/api/upload", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Upload-Key": key },
+    headers: { "Content-Type": "application/json", "X-Upload-Key": key, "X-Upload-Password": pw },
     body: JSON.stringify({ role, csv: await file.text() })
   });
   const out = await res.json().catch(() => ({}));
@@ -46,13 +48,15 @@ async function send(role, file) {
 }
 document.getElementById("go").addEventListener("click", async () => {
   const jobs = [["attempters", document.getElementById("fa").files[0]], ["reviewers", document.getElementById("fr").files[0]]].filter((j) => j[1]);
+  const pw = document.getElementById("pw").value;
+  if (!pw) return say("Enter the password", "err");
   if (!jobs.length) return say("Choose at least one CSV", "err");
   const btn = document.getElementById("go");
   btn.disabled = true;
   say("Uploading…");
   try {
     const done = [];
-    for (const [role, file] of jobs) done.push(await send(role, file));
+    for (const [role, file] of jobs) done.push(await send(role, file, pw));
     say("Uploaded " + done.join(" · "), "ok");
     document.getElementById("fa").value = "";
     document.getElementById("fr").value = "";

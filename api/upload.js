@@ -1,5 +1,7 @@
 import { put } from "@vercel/blob";
-import { ACCESS, REQUIRED_COLUMNS, ROLES, blobPath, headerColumns, validKey } from "./_store.js";
+import { ACCESS, REQUIRED_COLUMNS, ROLES, blobPath, headerColumns, validKey, validPassword } from "./_store.js";
+
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,8 +9,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!validKey(req.headers["x-upload-key"])) {
-    return res.status(401).json({ error: "Invalid upload key" });
+  if (!validKey(req.headers["x-upload-key"]) || !validPassword(req.headers["x-upload-password"])) {
+    await wait(1500);
+    return res.status(401).json({ error: "Wrong password" });
   }
 
   let body = req.body;

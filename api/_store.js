@@ -18,13 +18,16 @@ export const REQUIRED_COLUMNS = [
 
 export const blobPath = (role) => `mmscience-incentive-1026/${role}.csv`;
 
-export function validKey(provided) {
-  const expected = process.env.UPLOAD_PATH || "";
+function safeEqual(provided, expected) {
   if (!expected || typeof provided !== "string") return false;
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
   return a.length === b.length && timingSafeEqual(a, b);
 }
+
+export const validKey = (provided) => safeEqual(provided, process.env.UPLOAD_PATH || "");
+
+export const validPassword = (provided) => safeEqual(provided, process.env.UPLOAD_PASSWORD || "");
 
 export function headerColumns(csv) {
   const first = csv.replace(/^﻿/, "").split(/\r?\n/)[0] || "";
