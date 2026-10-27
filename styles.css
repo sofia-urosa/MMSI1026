@@ -9,18 +9,7 @@
   --accent-ink: #092e65;
   --pop: #ff7d7e;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #092e65;
-    --panel: #0d3a7a;
-    --ink: #f7f3ea;
-    --text: #f7f3ea;
-    --muted: #a7daef;
-    --line: #1f4c8c;
-    --accent: #a7daef;
-    --accent-ink: #092e65;
-  }
-}
+
 * { box-sizing: border-box; }
 body {
   margin: 0;
