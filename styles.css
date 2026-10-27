@@ -27,6 +27,7 @@ body {
 header { background: var(--panel); border-bottom: 1px solid var(--line); }
 .head { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 16px; padding-bottom: 16px; flex-wrap: wrap; }
 h1 { font-size: 20px; margin: 0; }
+.sub { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
 .updated { color: var(--muted); font-size: 13px; }
 .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 20px 0 16px; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }

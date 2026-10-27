@@ -1,4 +1,4 @@
-const state = { role: "attempters", week: "this_week", sortKey: "acceptance_pct", sortAsc: false, q: "", data: {} };
+const state = { role: "attempters", week: "this_week", sortKey: "acceptance_pct", sortAsc: false, q: "", data: {}, uploaded: {} };
 
 const el = (id) => document.getElementById(id);
 
@@ -34,10 +34,10 @@ const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? null : Number(v)
 async function load(role) {
   try {
     const res = await fetch(`/api/data?role=${role}&t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return parseCSV(await res.text());
+    if (!res.ok) return { rows: [], at: null };
+    return { rows: parseCSV(await res.text()), at: res.headers.get("X-Uploaded-At") };
   } catch (e) {
-    return [];
+    return { rows: [], at: null };
   }
 }
 
@@ -47,6 +47,7 @@ function view() {
     .map((r) => ({
       user_id: r.user_id,
       tasks: num(r[`tasks_${w}`]) || 0,
+      accepted: num(r[`accepted_${w}`]) || 0,
       acceptance_pct: num(r[`acceptance_pct_${w}`]),
       aht: num(r[`aht_${w}`])
     }))
@@ -69,6 +70,7 @@ function render() {
   el("rows").innerHTML = list.map((r) => `
     <tr>
       <td class="uid">${r.user_id}</td>
+      <td class="num">${r.accepted}</td>
       <td class="num">${fmt(r.acceptance_pct, 1, "%")}</td>
       <td class="num">${fmt(r.aht, 2, "h")}</td>
     </tr>`).join("");
@@ -77,9 +79,10 @@ function render() {
     th.classList.toggle("sorted", th.dataset.k === k);
     th.classList.toggle("asc", th.dataset.k === k && state.sortAsc);
   });
-  const all = [...(state.data.attempters || []), ...(state.data.reviewers || [])];
-  const ts = all.map((r) => r.generated_at_et).filter(Boolean).sort().pop();
-  el("updated").textContent = ts ? `${ts} ET` : "";
+  const at = state.uploaded[state.role];
+  el("updated").textContent = at
+    ? `Last updated: ${new Date(at).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} ET`
+    : "";
 }
 
 function bindSeg(id, attr, key) {
@@ -103,6 +106,7 @@ document.querySelectorAll("th[data-k]").forEach((th) => th.addEventListener("cli
 
 (async () => {
   const [a, r] = await Promise.all([load("attempters"), load("reviewers")]);
-  state.data = { attempters: a, reviewers: r };
+  state.data = { attempters: a.rows, reviewers: r.rows };
+  state.uploaded = { attempters: a.at, reviewers: r.at };
   render();
 })();
