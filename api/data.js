@@ -30,6 +30,7 @@ export default async function handler(req, res) {
 
   const text = await new Response(result.stream).text();
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
-  res.setHeader("X-Uploaded-At", new Date(result.blob.uploadedAt).toISOString());
+  const at = new Date(result.blob?.uploadedAt);
+  if (!isNaN(at)) res.setHeader("X-Uploaded-At", at.toISOString());
   return res.status(200).send(text);
 }

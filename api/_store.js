@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 
 export const ROLES = ["attempters", "reviewers"];
 
-export const ACCESS = process.env.BLOB_ACCESS === "private" ? "private" : "public";
+export const ACCESS = (process.env.BLOB_ACCESS || "private").trim().toLowerCase() === "public" ? "public" : "private";
 
 export const REQUIRED_COLUMNS = [
   "user_id",
@@ -60,11 +60,14 @@ const quote = (v) => (/[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
 
 const norm = (h) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 
-export function stripPrivate(csv) {
+export function stripPrivate(csv, uploadedAt) {
   const rows = parseCSV(csv.replace(/^﻿/, ""));
   if (!rows.length) return { csv: "", rows: 0 };
-  const keep = rows[0].map((h, i) => (PRIVATE_COLUMNS.includes(norm(h)) ? -1 : i)).filter((i) => i >= 0);
-  const out = rows.map((r) => keep.map((i) => quote(r[i] ?? "")).join(",")).join("\n") + "\n";
+  const drop = [...PRIVATE_COLUMNS, "uploaded_at"];
+  const keep = rows[0].map((h, i) => (drop.includes(norm(h)) ? -1 : i)).filter((i) => i >= 0);
+  const out = rows
+    .map((r, n) => [...keep.map((i) => quote(r[i] ?? "")), n === 0 ? "uploaded_at" : uploadedAt].join(","))
+    .join("\n") + "\n";
   return { csv: out, rows: rows.length - 1 };
 }
 

@@ -51,7 +51,7 @@ function view() {
       acceptance_pct: num(r[`acceptance_pct_${w}`]),
       aht: num(r[`aht_${w}`])
     }))
-    .filter((r) => r.user_id && r.tasks > 0);
+    .filter((r) => r.user_id);
 }
 
 const fmt = (v, d, s) => (v == null ? "–" : `${v.toFixed(d)}${s}`);
@@ -79,10 +79,16 @@ function render() {
     th.classList.toggle("sorted", th.dataset.k === k);
     th.classList.toggle("asc", th.dataset.k === k && state.sortAsc);
   });
-  const at = state.uploaded[state.role];
-  el("updated").textContent = at
-    ? `Last updated: ${new Date(at).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} ET`
-    : "";
+  const stamps = [
+    state.uploaded.attempters,
+    state.uploaded.reviewers,
+    ...(state.data.attempters || []).map((r) => r.uploaded_at),
+    ...(state.data.reviewers || []).map((r) => r.uploaded_at)
+  ].map((v) => new Date(v)).filter((d) => !isNaN(d));
+  const last = stamps.length ? new Date(Math.max(...stamps)) : null;
+  el("updated").textContent = last
+    ? `Last CSV upload: ${last.toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} ET`
+    : "Last CSV upload: –";
 }
 
 function bindSeg(id, attr, key) {

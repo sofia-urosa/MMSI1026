@@ -40,7 +40,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: `Missing columns: ${missing.join(", ")}` });
   }
 
-  const clean = stripPrivate(csv);
+  const uploadedAt = new Date().toISOString();
+  const clean = stripPrivate(csv, uploadedAt);
   const rows = clean.rows;
 
   try {
@@ -55,5 +56,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: `Upload failed: ${e.message}` });
   }
 
-  return res.status(200).json({ ok: true, role, rows, uploadedAt: new Date().toISOString() });
+  return res.status(200).json({ ok: true, role, rows, uploadedAt });
 }
