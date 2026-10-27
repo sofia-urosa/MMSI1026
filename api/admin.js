@@ -7,23 +7,24 @@ const page = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Upload</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Zilla+Slab:ital,wght@1,500&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <style>
 .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-top: 20px; display: grid; gap: 14px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; color: var(--muted); }
 .field input { font: inherit; color: var(--muted); max-width: 100%; }
-.field input[type="password"] { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; max-width: 320px; }
+.field input[type="password"] { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; max-width: 320px; }
 .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-button { border: 0; border-radius: 8px; padding: 8px 16px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+button { border: 1px solid var(--ink); border-radius: 999px; padding: 9px 20px; background: var(--ink); color: var(--bg); font: inherit; font-weight: 600; cursor: pointer; }
 button:disabled { opacity: 0.6; cursor: default; }
 .status { font-size: 13px; color: var(--muted); }
-.ok { color: #17734a; }
-.err { color: #c23b22; }
+.ok { color: #109648; }
+.err { color: #d7263d; }
 </style>
 </head>
 <body>
-<header><div class="wrap head"><h1>Upload</h1><a class="updated" href="/">View app</a></div></header>
+<header><div class="wrap head"><div><span class="logo" role="img" aria-label="Workada"></span><h1>Upload</h1></div><a class="updated" href="/">View app</a></div></header>
 <main class="wrap">
   <div class="box">
     <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password"></div>
