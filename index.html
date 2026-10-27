@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MM Science Incentive</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div>
+      <h1>MM Science Incentive</h1>
+      <p class="sub">Week 1: Oct 26 – Nov 1 · Week 2: Nov 2 – Nov 8 (ET)</p>
+    </div>
+    <div class="headright">
+      <div class="updated" id="updated">Loading…</div>
+      <button class="ghost" id="uploadToggle">Upload data</button>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <section class="upload" id="uploadPanel" hidden>
+    <div class="field">
+      <label for="uploadKey">Upload key</label>
+      <input id="uploadKey" type="password" autocomplete="current-password">
+    </div>
+    <div class="field">
+      <label for="fileAttempters">attempters.csv</label>
+      <input id="fileAttempters" type="file" accept=".csv,text/csv">
+    </div>
+    <div class="field">
+      <label for="fileReviewers">reviewers.csv</label>
+      <input id="fileReviewers" type="file" accept=".csv,text/csv">
+    </div>
+    <div class="field actions">
+      <button class="primary" id="uploadBtn">Upload</button>
+      <span class="status" id="uploadStatus"></span>
+    </div>
+  </section>
+  <div class="controls">
+    <div class="seg" id="roleSeg">
+      <button data-role="attempters" class="on">Attempters</button>
+      <button data-role="reviewers">Reviewers</button>
+    </div>
+    <div class="seg" id="weekSeg">
+      <button data-week="this_week" class="on">Week 1</button>
+      <button data-week="next_week">Week 2</button>
+    </div>
+    <input id="search" type="search" placeholder="Search user_id">
+  </div>
+  <section class="cards" id="cards"></section>
+  <section class="rules" id="rules"></section>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th data-k="user_id">User ID</th>
+          <th data-k="tasks" class="num">Tasks</th>
+          <th data-k="accepted" class="num">Accepted</th>
+          <th data-k="pending" class="num">Pending</th>
+          <th data-k="acceptance_pct" class="num">Acceptance</th>
+          <th data-k="hours" class="num">Hours</th>
+          <th data-k="aht" class="num">AHT</th>
+          <th data-k="tier" class="num">Tier</th>
+          <th>Next step</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="empty" id="empty" hidden>No data for this week yet.</p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
