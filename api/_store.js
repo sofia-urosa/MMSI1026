@@ -19,7 +19,7 @@ export const REQUIRED_COLUMNS = [
 export const blobPath = (role) => `mmscience-incentive-1026/${role}.csv`;
 
 export function validKey(provided) {
-  const expected = process.env.UPLOAD_KEY || "";
+  const expected = process.env.UPLOAD_PATH || "";
   if (!expected || typeof provided !== "string") return false;
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
