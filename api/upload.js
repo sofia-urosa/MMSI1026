@@ -1,5 +1,5 @@
 import { put } from "@vercel/blob";
-import { ACCESS, REQUIRED_COLUMNS, ROLES, blobPath, headerColumns, validKey, validPassword } from "./_store.js";
+import { ACCESS, REQUIRED_COLUMNS, ROLES, blobPath, headerColumns, stripPrivate, validKey, validPassword } from "./_store.js";
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -40,10 +40,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: `Missing columns: ${missing.join(", ")}` });
   }
 
-  const rows = csv.split(/\r?\n/).filter((l) => l.trim()).length - 1;
+  const clean = stripPrivate(csv);
+  const rows = clean.rows;
 
   try {
-    await put(blobPath(role), csv.replace(/^﻿/, ""), {
+    await put(blobPath(role), clean.csv, {
       access: ACCESS,
       addRandomSuffix: false,
       allowOverwrite: true,

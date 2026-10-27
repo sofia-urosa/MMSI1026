@@ -30,6 +30,7 @@ h1 { font-size: 20px; margin: 0; }
 .updated { color: var(--muted); font-size: 13px; }
 .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 20px 0 16px; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+.seg[hidden] { display: none; }
 .seg button { border: 0; background: transparent; color: var(--ink); padding: 8px 14px; font: inherit; cursor: pointer; }
 .seg button.on { background: var(--accent); color: #fff; }
 #search { flex: 1; min-width: 160px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); font: inherit; }

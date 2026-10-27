@@ -29,6 +29,45 @@ export const validKey = (provided) => safeEqual(provided, process.env.UPLOAD_PAT
 
 export const validPassword = (provided) => safeEqual(provided, process.env.UPLOAD_PASSWORD || "");
 
+export const PRIVATE_COLUMNS = ["email", "first_name"];
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); cell = "";
+      if (row.some((v) => v !== "")) rows.push(row);
+      row = [];
+    } else cell += c;
+  }
+  row.push(cell);
+  if (row.some((v) => v !== "")) rows.push(row);
+  return rows;
+}
+
+const quote = (v) => (/[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+
+const norm = (h) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+
+export function stripPrivate(csv) {
+  const rows = parseCSV(csv.replace(/^﻿/, ""));
+  if (!rows.length) return { csv: "", rows: 0 };
+  const keep = rows[0].map((h, i) => (PRIVATE_COLUMNS.includes(norm(h)) ? -1 : i)).filter((i) => i >= 0);
+  const out = rows.map((r) => keep.map((i) => quote(r[i] ?? "")).join(",")).join("\n") + "\n";
+  return { csv: out, rows: rows.length - 1 };
+}
+
 export function headerColumns(csv) {
   const first = csv.replace(/^﻿/, "").split(/\r?\n/)[0] || "";
   return first
