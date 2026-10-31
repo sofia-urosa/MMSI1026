@@ -72,7 +72,7 @@ function render() {
   el("rows").innerHTML = list.map((r) => `
     <tr>
       <td class="uid">${r.user_id}</td>
-      <td class="num">${r.accepted}${r.accepted >= CAP ? ` <span class="cap" title="The incentive covers up to ${CAP} accepted tasks. Extra tasks still pay base rate.">Cap reached</span>` : ""}</td>
+      <td class="num">${r.accepted >= CAP ? `<span class="dot" title="The incentive applies to the first ${CAP} accepted tasks." aria-label="${CAP}+ accepted tasks"></span>` : ""}${r.accepted}</td>
       <td class="num">${fmt(r.acceptance_pct, 1, "%")}</td>
       <td class="num">${fmt(r.aht, 2, "h")}</td>
     </tr>`).join("");
