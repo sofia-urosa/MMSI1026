@@ -29,7 +29,7 @@ export const validKey = (provided) => safeEqual(provided, process.env.UPLOAD_PAT
 
 export const validPassword = (provided) => safeEqual(provided, process.env.UPLOAD_PASSWORD || "");
 
-export const PRIVATE_COLUMNS = ["email", "first_name"];
+export const PRIVATE_COLUMNS = ["email", "first_name", "eligible_accepted_this_week", "eligible_hours_this_week", "eligible_accepted_next_week", "eligible_hours_next_week"];
 
 function parseCSV(text) {
   const rows = [];

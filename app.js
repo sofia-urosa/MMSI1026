@@ -1,3 +1,5 @@
+const CAP = 25;
+
 const state = { role: "attempters", week: "this_week", sortKey: "acceptance_pct", sortAsc: false, q: "", data: {}, uploaded: {} };
 
 const el = (id) => document.getElementById(id);
@@ -70,7 +72,7 @@ function render() {
   el("rows").innerHTML = list.map((r) => `
     <tr>
       <td class="uid">${r.user_id}</td>
-      <td class="num">${r.accepted}</td>
+      <td class="num">${r.accepted}${r.accepted >= CAP ? ` <span class="cap" title="The incentive covers up to ${CAP} accepted tasks. Extra tasks still pay base rate.">Cap reached</span>` : ""}</td>
       <td class="num">${fmt(r.acceptance_pct, 1, "%")}</td>
       <td class="num">${fmt(r.aht, 2, "h")}</td>
     </tr>`).join("");
